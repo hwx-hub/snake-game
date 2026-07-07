@@ -1,6 +1,10 @@
 # 贪吃蛇：零点迷宫
 
-![游戏效果图](assets/preview.png)
+## 效果图
+
+![准备界面](assets/Screenshot%202026-07-07%20161108.png)
+
+![游戏进行中](assets/Screenshot%202026-07-07%20161332.png)
 
 一个使用原生 HTML、CSS 和 JavaScript 制作的街机风贪吃蛇小游戏。项目无需安装依赖，打开页面即可运行。
 

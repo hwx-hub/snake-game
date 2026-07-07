@@ -23,11 +23,14 @@ const toastEl = document.getElementById("toast");
 const startBtn = document.getElementById("startBtn");
 const pauseBtn = document.getElementById("pauseBtn");
 const restartBtn = document.getElementById("restartBtn");
+const clearBestBtn = document.getElementById("clearBestBtn");
 const obstaclesToggle = document.getElementById("obstaclesToggle");
 const wrapToggle = document.getElementById("wrapToggle");
 const soundToggle = document.getElementById("soundToggle");
 const speedButtons = [...document.querySelectorAll("[data-speed]")];
 const touchButtons = [...document.querySelectorAll("[data-dir]")];
+const bestScoreKey = "snake-best-score-v3";
+const oldBestScoreKeys = ["snake-best-score", "snake-best-score-v2"];
 
 const text = {
   idle: "\u5f85\u673a\u4e2d",
@@ -81,7 +84,8 @@ let audioContext;
 
 function readBestScore() {
   try {
-    return Number(localStorage.getItem("snake-best-score") || 0);
+    oldBestScoreKeys.forEach((key) => localStorage.removeItem(key));
+    return Number(localStorage.getItem(bestScoreKey) || 0);
   } catch (error) {
     return 0;
   }
@@ -483,16 +487,31 @@ function updateBestScore() {
   if (score > bestScore) {
     bestScore = score;
     try {
-      localStorage.setItem("snake-best-score", String(bestScore));
+      localStorage.setItem(bestScoreKey, String(bestScore));
     } catch (error) {
       // Storage can be blocked in some local-file or privacy modes.
     }
   }
 }
 
+function clearBestScore() {
+  bestScore = 0;
+  try {
+    oldBestScoreKeys.forEach((key) => localStorage.removeItem(key));
+    localStorage.removeItem(bestScoreKey);
+    localStorage.setItem(bestScoreKey, "0");
+  } catch (error) {
+    // Storage can be blocked in some local-file or privacy modes.
+  }
+  bestScoreEl.textContent = "0";
+  bestScoreEl.classList.remove("compact", "tiny");
+  updateStats();
+  showToast("\u6700\u9ad8\u5206\u5df2\u6e05\u96f6");
+}
+
 function updateStats() {
-  scoreEl.textContent = score;
-  bestScoreEl.textContent = bestScore;
+  setHudNumber(scoreEl, score);
+  setHudNumber(bestScoreEl, bestScore);
   lengthEl.textContent = snake.length;
   levelEl.textContent = level;
   comboEl.textContent = `${Math.max(1, Math.floor(combo))}\u500d`;
@@ -500,6 +519,13 @@ function updateStats() {
   bonusStateEl.textContent = bonusFood ? text.bonusActive : text.bonusNone;
   speedLabelEl.textContent = speedMap[selectedSpeed].label;
   screenEl.classList.toggle("danger", gameState === "gameover");
+}
+
+function setHudNumber(element, value) {
+  const textValue = String(Math.floor(value));
+  element.textContent = textValue;
+  element.classList.toggle("compact", textValue.length >= 5);
+  element.classList.toggle("tiny", textValue.length >= 7);
 }
 
 function updateStatus(label, mode) {
@@ -576,6 +602,11 @@ document.addEventListener("keydown", (event) => {
 startBtn.addEventListener("click", startGame);
 pauseBtn.addEventListener("click", pauseGame);
 restartBtn.addEventListener("click", restartGame);
+clearBestBtn.addEventListener("click", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  clearBestScore();
+});
 overlayButton.addEventListener("click", startGame);
 
 speedButtons.forEach((button) => {
