@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>&#36138;&#21507;&#34503;&#65306;&#38646;&#28857;&#36855;&#23467;</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="arcade">
+    <section class="cabinet" aria-label="&#36138;&#21507;&#34503;&#28216;&#25103;">
+      <header class="marquee">
+        <div>
+          <span class="kicker">&#34903;&#26426;&#27169;&#24335;</span>
+          <h1>&#36138;&#21507;&#34503;&#65306;&#38646;&#28857;&#36855;&#23467;</h1>
+        </div>
+        <div class="live-status">
+          <span id="statusDot" class="dot"></span>
+          <span id="statusText">&#24453;&#26426;&#20013;</span>
+        </div>
+      </header>
+
+      <div class="hud">
+        <div class="hud-card score-card">
+          <span>&#24471;&#20998;</span>
+          <strong id="score">0</strong>
+        </div>
+        <div class="hud-card">
+          <span>&#26368;&#39640;</span>
+          <strong id="bestScore">0</strong>
+        </div>
+        <div class="hud-card">
+          <span>&#38271;&#24230;</span>
+          <strong id="length">3</strong>
+        </div>
+        <div class="hud-card">
+          <span>&#31561;&#32423;</span>
+          <strong id="level">1</strong>
+        </div>
+        <div class="hud-card combo-card">
+          <span>&#36830;&#20987;</span>
+          <strong id="combo">1&#20493;</strong>
+        </div>
+      </div>
+
+      <div class="screen">
+        <canvas id="gameCanvas" width="720" height="720" aria-label="&#36138;&#21507;&#34503;&#28216;&#25103;&#30011;&#24067;"></canvas>
+        <div id="countdown" class="countdown hidden">3</div>
+        <div class="toast hidden" id="toast">+10</div>
+        <div class="overlay" id="overlay">
+          <div class="overlay-panel">
+            <span class="panel-badge" id="overlayBadge">&#25237;&#24065;&#24320;&#22987;</span>
+            <h2 id="overlayTitle">&#20934;&#22791;&#24320;&#22987;</h2>
+            <p id="overlayText">&#25353;&#24320;&#22987;&#65292;&#25110;&#29992;&#23383;&#27597;&#38190; / &#26041;&#21521;&#38190;&#30452;&#25509;&#21551;&#21160;&#12290;</p>
+            <button class="primary xl" id="overlayButton" type="button">&#24320;&#22987;&#28216;&#25103;</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mobile-pad" aria-label="&#35302;&#25511;&#26041;&#21521;&#38190;">
+        <button type="button" data-dir="up" aria-label="&#21521;&#19978;">&#9650;</button>
+        <button type="button" data-dir="left" aria-label="&#21521;&#24038;">&#9664;</button>
+        <button type="button" data-dir="down" aria-label="&#21521;&#19979;">&#9660;</button>
+        <button type="button" data-dir="right" aria-label="&#21521;&#21491;">&#9654;</button>
+      </div>
+    </section>
+
+    <aside class="side-panel" aria-label="&#28216;&#25103;&#25511;&#21046;&#21488;">
+      <section class="panel-block command-block">
+        <div class="block-title">
+          <span>&#25351;&#20196;</span>
+          <h2>&#25511;&#21046;&#21488;</h2>
+        </div>
+        <div class="command-grid">
+          <button class="primary" id="startBtn" type="button">&#24320;&#22987;</button>
+          <button id="pauseBtn" type="button">&#26242;&#20572;</button>
+          <button id="restartBtn" type="button">&#37325;&#24320;</button>
+        </div>
+      </section>
+
+      <section class="panel-block">
+        <div class="block-title">
+          <span>&#38590;&#24230;</span>
+          <h2>&#38590;&#24230;</h2>
+        </div>
+        <div class="difficulty" role="group" aria-label="&#38590;&#24230;">
+          <button type="button" class="active" data-speed="easy">
+            <strong>&#24033;&#33322;</strong>
+            <span>145&#27627;&#31186;</span>
+          </button>
+          <button type="button" data-speed="normal">
+            <strong>&#26631;&#20934;</strong>
+            <span>105&#27627;&#31186;</span>
+          </button>
+          <button type="button" data-speed="hard">
+            <strong>&#29378;&#39129;</strong>
+            <span>72&#27627;&#31186;</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="panel-block toggles">
+        <div class="block-title">
+          <span>&#35268;&#21017;</span>
+          <h2>&#35268;&#21017;</h2>
+        </div>
+        <label>
+          <span>
+            <strong>&#38556;&#30861;&#29289;</strong>
+            <small>&#22686;&#21152;&#36855;&#23467;&#21387;&#21147;</small>
+          </span>
+          <input id="obstaclesToggle" type="checkbox" checked>
+        </label>
+        <label>
+          <span>
+            <strong>&#31359;&#22681;</strong>
+            <small>&#36793;&#32536;&#20250;&#20256;&#36865;</small>
+          </span>
+          <input id="wrapToggle" type="checkbox">
+        </label>
+        <label>
+          <span>
+            <strong>&#38899;&#25928;</strong>
+            <small>&#21507;&#21040;&#39135;&#29289;&#26102;&#21709;&#24212;</small>
+          </span>
+          <input id="soundToggle" type="checkbox" checked>
+        </label>
+      </section>
+
+      <section class="panel-block telemetry">
+        <div class="block-title">
+          <span>&#36816;&#34892;&#25968;&#25454;</span>
+          <h2>&#26412;&#23616;&#25968;&#25454;</h2>
+        </div>
+        <dl>
+          <div>
+            <dt>&#39135;&#29289;</dt>
+            <dd id="foodCount">0</dd>
+          </div>
+          <div>
+            <dt>&#22870;&#21169;</dt>
+            <dd id="bonusState">&#26410;&#20986;&#29616;</dd>
+          </div>
+          <div>
+            <dt>&#36895;&#24230;</dt>
+            <dd id="speedLabel">&#24033;&#33322;</dd>
+          </div>
+          <div>
+            <dt>&#32593;&#26684;</dt>
+            <dd>24&#20056;24</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="panel-block keymap">
+        <div class="block-title">
+          <span>&#36755;&#20837;</span>
+          <h2>&#25805;&#20316;</h2>
+        </div>
+        <div class="keys">
+          <kbd>&#23383;&#27597;&#38190;</kbd>
+          <kbd>&#26041;&#21521;&#38190;</kbd>
+          <kbd>&#31354;&#26684;</kbd>
+          <kbd>&#22238;&#36710;</kbd>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
